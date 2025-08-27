@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	rdxsort "github.com/loov/radixsort"
+	"github.com/twotwotwo/sorts/sortutil"
 	"golang.org/x/exp/constraints"
 )
 
@@ -83,3 +84,28 @@ func BenchmarkLoovRadixSort(b *testing.B) {
 		}
 	}
 }
+
+func benchmarkTwoTwoTwoRadixSort(b *testing.B, size int, mode string) {
+	data := generateData[uint32](size, mode)
+	data = sortutil.Uint32Slice(data)
+	runtime.GC()
+	b.ResetTimer()
+
+	for b.Loop() {
+		tmp := append(sortutil.Uint32Slice{}, data...)
+		tmp.Sort()
+	}
+}
+
+func BenchmarkTwoTwoTwoRadixSort(b *testing.B) {
+	for _, size := range sizes {
+		for _, mode := range modes {
+			b.Run(func() string {
+				return fmt.Sprintf("RadixSortByTwoTwoTwoUint32_%d_%s", size, mode)
+			}(), func(b *testing.B) {
+				benchmarkTwoTwoTwoRadixSort(b, size, mode)
+			})
+		}
+	}
+}
+
