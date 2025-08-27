@@ -1,6 +1,6 @@
 package radixsort
 
-// Uint8 sorts the data slice using radix sort algorithm with a temporary buffer.
+// Uint8 sorts the data slice of type uint8 using radix sort algorithm with a temporary buffer.
 // It panics if buf is shorter than data slice.
 func Uint8(data, buf []uint8) {
 	radix8(data, buf)
