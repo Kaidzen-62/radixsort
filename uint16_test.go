@@ -57,7 +57,7 @@ func TestUint16(t *testing.T) {
 			radixsort.Uint16(data, buf)
 
 			if !reflect.DeepEqual(tt.want, data) {
-				t.Errorf("Unit8(%v) = %v, want %v", tt.in, data, tt.want)
+				t.Errorf("Unit16(%v) = %v, want %v", tt.in, data, tt.want)
 			}
 		})
 	}
@@ -84,7 +84,7 @@ func TestUint16MatchesStdlib(t *testing.T) {
 	}
 }
 
-func benchmarkuint16(b *testing.B, size int, mode string) {
+func benchmarkUint16(b *testing.B, size int, mode string) {
 	data := generateData[uint16](size, mode)
 	buf := make([]uint16, size)
 	runtime.GC()
@@ -102,7 +102,7 @@ func BenchmarkUint16(b *testing.B) {
 			b.Run(func() string {
 				return fmt.Sprintf("RadixsortUint16_%d_%s", size, mode)
 			}(), func(b *testing.B) {
-				benchmarkuint16(b, size, mode)
+				benchmarkUint16(b, size, mode)
 			})
 		}
 	}
