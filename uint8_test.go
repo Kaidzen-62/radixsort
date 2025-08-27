@@ -85,14 +85,14 @@ func TestUint8MatchesStdlib(t *testing.T) {
 }
 
 func benchmarkUint8(b *testing.B, size int, mode string) {
-	data := generateData[uint8](size, mode)
+	testData := generateData[uint8](size, mode)
 	buf := make([]uint8, size)
 	runtime.GC()
 
 	b.ResetTimer()
 	for b.Loop() {
-		tmp := append([]uint8{}, data...)
-		radixsort.Uint8(tmp, buf)
+		data := append([]uint8{}, testData...)
+		radixsort.Uint8(data, buf)
 	}
 }
 
