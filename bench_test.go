@@ -15,8 +15,7 @@ import (
 var sizes = []int{100, 1000, 10_000, 100_000, 1_000_000}
 var modes = []string{"random", "sorted", "reverse", "duplicates"}
 
-func generateData[T 
-                  .Integer](n int, mode string) []T {
+func generateData[T constraints.Integer](n int, mode string) []T {
 	data := make([]T, n)
 	switch mode {
 	case "sorted":
@@ -109,3 +108,4 @@ func BenchmarkTwoTwoTwoRadixSort(b *testing.B) {
 		}
 	}
 }
+
