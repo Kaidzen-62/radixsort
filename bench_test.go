@@ -27,7 +27,7 @@ func generateData[T constraints.Integer](n int, mode string) []T {
 		}
 	case "duplicates":
 		for i := range data {
-			data[i] = T(n % 10)
+			data[i] = T(i % 66)
 		}
 	default: // "random"
 		for i := range data {
