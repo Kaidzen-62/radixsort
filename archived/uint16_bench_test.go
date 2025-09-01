@@ -51,7 +51,7 @@ func BenchmarkRadix16b8(b *testing.B) {
 	for _, size := range sizes {
 		for _, mode := range modes {
 			b.Run(func() string {
-				return fmt.Sprintf("RadixsortRadix16b16_%d_%s", size, mode)
+				return fmt.Sprintf("RadixsortRadix16b16_ARCHIVE_%d_%s", size, mode)
 			}(), func(b *testing.B) {
 				benchmarkuint16b16(b, size, mode)
 			})
@@ -75,7 +75,7 @@ func BenchmarkRadix16b8Opt(b *testing.B) {
 	for _, size := range sizes {
 		for _, mode := range modes {
 			b.Run(func() string {
-				return fmt.Sprintf("RadixsortRadix16b8Opt_%d_%s", size, mode)
+				return fmt.Sprintf("RadixsortRadix16b8Opt_ARCHIVE_%d_%s", size, mode)
 			}(), func(b *testing.B) {
 				benchmarkuint16b8Opt(b, size, mode)
 			})
