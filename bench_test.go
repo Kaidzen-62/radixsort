@@ -1,21 +1,47 @@
 package radixsort_test
 
 import (
-	"fmt"
 	"math/rand"
-	"runtime"
-	"slices"
-	"testing"
+	"reflect"
+	"sync"
+	"time"
 
-	rdxsort "github.com/loov/radixsort"
-	"github.com/twotwotwo/sorts/sortutil"
 	"golang.org/x/exp/constraints"
 )
 
 var sizes = []int{100, 1000, 10_000, 100_000, 1_000_000}
 var modes = []string{"random", "sorted", "reverse", "duplicates"}
 
+// Key for cache map
+type dataKey struct {
+	n    int
+	mode string
+	typ  string // for distinguishing types, e.g. "int", "int64", etc.
+}
+
+// Global cache and mutex
+var (
+	cache = make(map[dataKey][]any)
+	mu    sync.RWMutex
+	r     = rand.New(rand.NewSource(time.Now().UnixNano())) // local random generator
+)
+
 func generateData[T constraints.Integer](n int, mode string) []T {
+	key := dataKey{n: n, mode: mode, typ: typeof[T]()}
+
+	mu.RLock()
+	if cached, found := cache[key]; found {
+		mu.RUnlock()
+		// Convert back to the required type
+		res := make([]T, len(cached))
+		for i, v := range cached {
+			res[i] = v.(T)
+		}
+		return res
+	}
+	mu.RUnlock()
+
+	// Generate data
 	data := make([]T, n)
 	switch mode {
 	case "sorted":
@@ -31,81 +57,26 @@ func generateData[T constraints.Integer](n int, mode string) []T {
 			data[i] = T(i % 66)
 		}
 	default: // "random"
+		mu.Lock()
 		for i := range data {
-			data[i] = T(rand.Intn(n * 10))
+			data[i] = T(r.Intn(n * 10))
 		}
+		mu.Unlock()
 	}
+
+	// Save to cache
+	mu.Lock()
+	cache[key] = make([]any, len(data))
+	for i, v := range data {
+		cache[key][i] = v
+	}
+	mu.Unlock()
+
 	return data
 }
 
-func benchmarkStdLibSort(b *testing.B, size int, mode string) {
-	data := generateData[uint32](size, mode)
-	runtime.GC()
-	b.ResetTimer()
-
-	for b.Loop() {
-		tmp := append([]uint32{}, data...)
-		slices.Sort(tmp)
-	}
+// typeof — helper function to get type name
+func typeof[T any]() string {
+	var zero T
+	return reflect.TypeOf(zero).String()
 }
-
-func BenchmarkStdLibSort(b *testing.B) {
-	for _, size := range sizes {
-		for _, mode := range modes {
-			b.Run(func() string {
-				return fmt.Sprintf("StdLib_%d_%s", size, mode)
-			}(), func(b *testing.B) {
-				benchmarkStdLibSort(b, size, mode)
-			})
-		}
-	}
-}
-
-func benchmarkLoovRadixSort(b *testing.B, size int, mode string) {
-	data := generateData[uint32](size, mode)
-	buf := make([]uint32, len(data))
-	runtime.GC()
-	b.ResetTimer()
-
-	for b.Loop() {
-		tmp := append([]uint32{}, data...)
-		rdxsort.Uint32(tmp, buf)
-	}
-}
-
-func BenchmarkLoovRadixSort(b *testing.B) {
-	for _, size := range sizes {
-		for _, mode := range modes {
-			b.Run(func() string {
-				return fmt.Sprintf("RadixSortByLoovUint32_%d_%s", size, mode)
-			}(), func(b *testing.B) {
-				benchmarkLoovRadixSort(b, size, mode)
-			})
-		}
-	}
-}
-
-func benchmarkTwoTwoTwoRadixSort(b *testing.B, size int, mode string) {
-	data := generateData[uint32](size, mode)
-	data = sortutil.Uint32Slice(data)
-	runtime.GC()
-	b.ResetTimer()
-
-	for b.Loop() {
-		tmp := append(sortutil.Uint32Slice{}, data...)
-		tmp.Sort()
-	}
-}
-
-func BenchmarkTwoTwoTwoRadixSort(b *testing.B) {
-	for _, size := range sizes {
-		for _, mode := range modes {
-			b.Run(func() string {
-				return fmt.Sprintf("RadixSortByTwoTwoTwoUint32_%d_%s", size, mode)
-			}(), func(b *testing.B) {
-				benchmarkTwoTwoTwoRadixSort(b, size, mode)
-			})
-		}
-	}
-}
-
