@@ -1,4 +1,4 @@
-module radixsort
+module github.com/Kaidzen-62/radixsort
 
 go 1.24.6
 
