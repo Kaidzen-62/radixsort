@@ -75,7 +75,7 @@ func generateData[T constraints.Integer](n int, mode string) []T {
 	return data
 }
 
-// typeof — helper function to get type name
+// typeof - helper function to get type name
 func typeof[T any]() string {
 	var zero T
 	return reflect.TypeOf(zero).String()

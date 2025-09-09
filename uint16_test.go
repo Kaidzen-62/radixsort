@@ -8,7 +8,7 @@ import (
 	"slices"
 	"testing"
 
-	"radixsort"
+	"github.com/Kaidzen-62/radixsort"
 )
 
 func TestUint16(t *testing.T) {
