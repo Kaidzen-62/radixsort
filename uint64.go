@@ -1,6 +1,13 @@
 package radixsort
 
-import "slices"
+import (
+	"slices"
+)
+
+// NOTE: repeat all researches (we made benchmarks more precise)
+// [x] - copy condition with swaps - swaps is working good
+// [ ] - acc-s as arrays
+// [ ] - sorting function
 
 // Uint64 sorts the data slice of type uint64 using radix sort algorithm with a temporary buffer.
 // It panics if buf is shorter than data slice.
@@ -109,6 +116,9 @@ func radix64b8Opt(data, buf []uint64) {
 }
 
 func Uint64Old(data, buf []uint64) {
+	if len(data) < 2 || slices.IsSorted(data) {
+		return
+	}
 	radix64b8Old(data, buf)
 }
 
@@ -116,6 +126,16 @@ func radix64b8Old(data, buf []uint64) {
 	if len(buf) < len(data) {
 		panic("Radixsort: buffer length is less than data length")
 	}
+
+	// isSorted := true
+	// for i := len(data) - 1; i > 0; i-- {
+	// 	if data[i] < data[i-1] {
+	// 		isSorted = false
+	// 	}
+	// }
+	// if isSorted {
+	// 	return
+	// }
 
 	// The buckets are first used to count element frequencies,
 	// and then reused to store offsets (prefix sums).
@@ -165,6 +185,7 @@ func radix64b8Old(data, buf []uint64) {
 	// because there are some possible ways to reduce cycles
 	// Currently it seems, that we gain some perfomance, but only for arrays less then 100_000 elements
 	changes := [8]uint{}
+
 	for i := range 8 {
 		// the 0th element always is 0; If offset at 1th equal with last element
 		// then there is was only 1 nonzero element (count)
@@ -201,7 +222,8 @@ func radix64b8Old(data, buf []uint64) {
 
 	// is this if statement helps with perfomance?
 	// NOTE: yes, we gain a little perfomance ~ 3%
-	if swaps&1 == 1 {
-		copy(data, src)
-	}
+
+	// if swaps&1 == 1 {
+	copy(data, src)
+	// }
 }
