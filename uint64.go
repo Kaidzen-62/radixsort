@@ -17,46 +17,46 @@ func radix64b8(data, buf []uint64) {
 		panic("Radixsort: buffer length is less than data length")
 	}
 
-	// offsets[d][b] stores prefix sums (insertion offsets) for digit d and offset b.
+	// offsets[d][b] stores prefix sums (insertion offsets) for digit d and offsets b.
 	// First they are used as frequency counters, then converted into offsets.
-	offset := [8][256]uint{}
+	offsets := [8][256]uint{}
 	for _, v := range data {
-		offset[0][uint8(v>>(0*8))]++
-		offset[1][uint8(v>>(1*8))]++
-		offset[2][uint8(v>>(2*8))]++
-		offset[3][uint8(v>>(3*8))]++
-		offset[4][uint8(v>>(4*8))]++
-		offset[5][uint8(v>>(5*8))]++
-		offset[6][uint8(v>>(6*8))]++
-		offset[7][uint8(v>>(7*8))]++
+		offsets[0][uint8(v>>(0*8))]++
+		offsets[1][uint8(v>>(1*8))]++
+		offsets[2][uint8(v>>(2*8))]++
+		offsets[3][uint8(v>>(3*8))]++
+		offsets[4][uint8(v>>(4*8))]++
+		offsets[5][uint8(v>>(5*8))]++
+		offsets[6][uint8(v>>(6*8))]++
+		offsets[7][uint8(v>>(7*8))]++
 	}
 
 	// Convert counts into prefix sums (offsets).
-	acc0 := offset[0][0]
-	acc1 := offset[1][0]
-	acc2 := offset[2][0]
-	acc3 := offset[3][0]
-	acc4 := offset[4][0]
-	acc5 := offset[5][0]
-	acc6 := offset[6][0]
-	acc7 := offset[7][0]
-	offset[0][0] = 0
-	offset[1][0] = 0
-	offset[2][0] = 0
-	offset[3][0] = 0
-	offset[4][0] = 0
-	offset[5][0] = 0
-	offset[6][0] = 0
-	offset[7][0] = 0
+	acc0 := offsets[0][0]
+	acc1 := offsets[1][0]
+	acc2 := offsets[2][0]
+	acc3 := offsets[3][0]
+	acc4 := offsets[4][0]
+	acc5 := offsets[5][0]
+	acc6 := offsets[6][0]
+	acc7 := offsets[7][0]
+	offsets[0][0] = 0
+	offsets[1][0] = 0
+	offsets[2][0] = 0
+	offsets[3][0] = 0
+	offsets[4][0] = 0
+	offsets[5][0] = 0
+	offsets[6][0] = 0
+	offsets[7][0] = 0
 	for i := 1; i < 256; i++ {
-		offset[0][i], acc0 = acc0, acc0+offset[0][i]
-		offset[1][i], acc1 = acc1, acc1+offset[1][i]
-		offset[2][i], acc2 = acc2, acc2+offset[2][i]
-		offset[3][i], acc3 = acc3, acc3+offset[3][i]
-		offset[4][i], acc4 = acc4, acc4+offset[4][i]
-		offset[5][i], acc5 = acc5, acc5+offset[5][i]
-		offset[6][i], acc6 = acc6, acc6+offset[6][i]
-		offset[7][i], acc7 = acc7, acc7+offset[7][i]
+		offsets[0][i], acc0 = acc0, acc0+offsets[0][i]
+		offsets[1][i], acc1 = acc1, acc1+offsets[1][i]
+		offsets[2][i], acc2 = acc2, acc2+offsets[2][i]
+		offsets[3][i], acc3 = acc3, acc3+offsets[3][i]
+		offsets[4][i], acc4 = acc4, acc4+offsets[4][i]
+		offsets[5][i], acc5 = acc5, acc5+offsets[5][i]
+		offsets[6][i], acc6 = acc6, acc6+offsets[6][i]
+		offsets[7][i], acc7 = acc7, acc7+offsets[7][i]
 	}
 
 	// Optimization: skip sorting passes where all elements in the digit are identical.
@@ -79,16 +79,16 @@ func radix64b8(data, buf []uint64) {
 	uniqueOffsets := [8]uint{}
 	for i := range 8 {
 		// If all offsets are the same, there is only one unique value.
-		if offset[i][1] == offset[i][255] {
+		if offsets[i][1] == offsets[i][255] {
 			uniqueOffsets[i] = 1
 			continue
 		}
 
 		for j := 1; j < 256; j++ {
-			if offset[i][j-1] != offset[i][j] {
+			if offsets[i][j-1] != offsets[i][j] {
 				uniqueOffsets[i]++
 			}
-			if offset[i][j] == offset[i][255] {
+			if offsets[i][j] == offsets[i][255] {
 				break
 			}
 		}
@@ -103,9 +103,9 @@ func radix64b8(data, buf []uint64) {
 		swaps++
 
 		for _, v := range src {
-			index := offset[i][uint8(v>>(i*8))]
+			index := offsets[i][uint8(v>>(i*8))]
 			dst[index] = v
-			offset[i][uint8(v>>(i*8))]++
+			offsets[i][uint8(v>>(i*8))]++
 		}
 		src, dst = dst, src
 	}
