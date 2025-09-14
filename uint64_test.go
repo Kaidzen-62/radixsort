@@ -9,7 +9,29 @@ import (
 	"testing"
 
 	"github.com/Kaidzen-62/radixsort"
+	rdxsort "github.com/loov/radixsort"
 )
+
+func TestLoovUint32MatchesStdlib(t *testing.T) {
+	for size := 1; size <= 1024; size *= 2 {
+		input := make([]uint32, size)
+		for i := range input {
+			input[i] = uint32(rand.Int())
+		}
+
+		want := make([]uint32, len(input))
+		copy(want, input)
+		slices.Sort(want)
+
+		buf := make([]uint32, len(input))
+		data := append([]uint32(nil), input...)
+		rdxsort.Uint32(data, buf)
+
+		if !reflect.DeepEqual(want, data) {
+			t.Fatalf("mismatch for size %d: data %v, want %v", size, data, want)
+		}
+	}
+}
 
 func TestUint64(t *testing.T) {
 	tests := []struct {
