@@ -32,14 +32,16 @@ func radix64b8(data, buf []uint64) {
 	}
 
 	// Convert counts into prefix sums (offsets).
-	acc0 := offsets[0][0]
-	acc1 := offsets[1][0]
-	acc2 := offsets[2][0]
-	acc3 := offsets[3][0]
-	acc4 := offsets[4][0]
-	acc5 := offsets[5][0]
-	acc6 := offsets[6][0]
-	acc7 := offsets[7][0]
+	acc := [8]uint{
+		offsets[0][0],
+		offsets[1][0],
+		offsets[2][0],
+		offsets[3][0],
+		offsets[4][0],
+		offsets[5][0],
+		offsets[6][0],
+		offsets[7][0],
+	}
 	offsets[0][0] = 0
 	offsets[1][0] = 0
 	offsets[2][0] = 0
@@ -49,14 +51,14 @@ func radix64b8(data, buf []uint64) {
 	offsets[6][0] = 0
 	offsets[7][0] = 0
 	for i := 1; i < 256; i++ {
-		offsets[0][i], acc0 = acc0, acc0+offsets[0][i]
-		offsets[1][i], acc1 = acc1, acc1+offsets[1][i]
-		offsets[2][i], acc2 = acc2, acc2+offsets[2][i]
-		offsets[3][i], acc3 = acc3, acc3+offsets[3][i]
-		offsets[4][i], acc4 = acc4, acc4+offsets[4][i]
-		offsets[5][i], acc5 = acc5, acc5+offsets[5][i]
-		offsets[6][i], acc6 = acc6, acc6+offsets[6][i]
-		offsets[7][i], acc7 = acc7, acc7+offsets[7][i]
+		offsets[0][i], acc[0] = acc[0], acc[0]+offsets[0][i]
+		offsets[1][i], acc[1] = acc[1], acc[1]+offsets[1][i]
+		offsets[2][i], acc[2] = acc[2], acc[2]+offsets[2][i]
+		offsets[3][i], acc[3] = acc[3], acc[3]+offsets[3][i]
+		offsets[4][i], acc[4] = acc[4], acc[4]+offsets[4][i]
+		offsets[5][i], acc[5] = acc[5], acc[5]+offsets[5][i]
+		offsets[6][i], acc[6] = acc[6], acc[6]+offsets[6][i]
+		offsets[7][i], acc[7] = acc[7], acc[7]+offsets[7][i]
 	}
 
 	// Optimization: skip sorting passes where all elements in the digit are identical.
@@ -78,19 +80,23 @@ func radix64b8(data, buf []uint64) {
 	// on larger arrays, the benefit becomes insignificant :-(
 	uniqueOffsets := [8]uint{}
 	for i := range 8 {
-		// If all offsets are the same, there is only one unique value.
-		if offsets[i][1] == offsets[i][255] {
+		if offsets[i][255] == 0 || offsets[i][1] == acc[i] {
 			uniqueOffsets[i] = 1
 			continue
 		}
 
 		for j := 1; j < 256; j++ {
-			if offsets[i][j-1] != offsets[i][j] {
+			if offsets[i][j] != offsets[i][j-1] {
 				uniqueOffsets[i]++
 			}
-			if offsets[i][j] == offsets[i][255] {
+
+			if offsets[i][j] == acc[i] {
 				break
 			}
+		}
+
+		if offsets[i][255] != acc[i] {
+			uniqueOffsets[i]++
 		}
 	}
 
