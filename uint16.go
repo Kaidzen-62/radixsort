@@ -26,31 +26,34 @@ func radix16b8(data, buf []uint16) {
 	}
 
 	// Convert counts into prefix sums (offsets).
-	acc0 := offsets[0][0]
-	acc1 := offsets[1][0]
+	acc := [2]uint{offsets[0][0], offsets[1][0]}
 	offsets[0][0] = 0
 	offsets[1][0] = 0
 	for i := 1; i < 256; i++ {
-		offsets[0][i], acc0 = acc0, acc0+offsets[0][i]
-		offsets[1][i], acc1 = acc1, acc1+offsets[1][i]
+		offsets[0][i], acc[0] = acc[0], acc[0]+offsets[0][i]
+		offsets[1][i], acc[1] = acc[1], acc[1]+offsets[1][i]
 	}
 
 	// Optimization: skip sorting passes where all elements in the digit are identical.
 	uniqueOffsets := [2]uint{}
 	for i := range 2 {
-		// If all offsets are the same, there is only one unique value.
-		if offsets[i][1] == offsets[i][255] {
+		if offsets[i][255] == 0 || offsets[i][1] == acc[i] {
 			uniqueOffsets[i] = 1
 			continue
 		}
 
 		for j := 1; j < 256; j++ {
-			if offsets[i][j-1] != offsets[i][j] {
+			if offsets[i][j] != offsets[i][j-1] {
 				uniqueOffsets[i]++
 			}
-			if offsets[i][j] == offsets[i][255] {
+
+			if offsets[i][j] == acc[i] {
 				break
 			}
+		}
+
+		if offsets[i][255] != acc[i] {
+			uniqueOffsets[i]++
 		}
 	}
 
