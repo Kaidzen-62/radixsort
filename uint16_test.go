@@ -84,19 +84,6 @@ func TestUint16MatchesStdlib(t *testing.T) {
 	}
 }
 
-func TestUint16Bug(t *testing.T) {
-	// testData := []uint16{56601, 213}
-	// testData := []uint16{65282, 35865}
-	// testData := []uint16{65292, 44395}
-	testData := []uint16{0xffc6, 0x69f4}
-	testDataCopy := append([]uint16{}, testData...)
-
-	buf := make([]uint16, len(testData))
-	radixsort.Uint16(testData, buf)
-	slices.Sort(testDataCopy)
-	// fmt.Println(testData, buf, testDataCopy)
-}
-
 func benchmarkUint16(b *testing.B, size int, mode string) {
 	data := generateData[uint16](size, mode)
 	buf := make([]uint16, size)

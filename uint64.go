@@ -1,6 +1,7 @@
 package radixsort
 
 // Uint64 sorts the given slice of uint64 values in ascending order using the radix sort algorithm.
+//
 // A temporary buffer (buf) is required, and its length must be at least as large as data.
 // It panics if buf is shorter than data slice.
 //
@@ -103,7 +104,6 @@ func radix64b8(data, buf []uint64) {
 	swaps := 0
 	src, dst := data, buf[:len(data)]
 	for i := range 8 {
-		// TODO: CRITICAL ERROR! THIS OPTIMIZATION NOT WORK WITH SIGNED INTEGERS!!!
 		if uniqueOffsets[i] < 2 {
 			continue
 		}
