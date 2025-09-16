@@ -1,6 +1,7 @@
 package radixsort
 
 // Uint64 sorts the given slice of uint64 values in ascending order using the radix sort algorithm.
+//
 // A temporary buffer (buf) is required, and its length must be at least as large as data.
 // It panics if buf is shorter than data slice.
 //

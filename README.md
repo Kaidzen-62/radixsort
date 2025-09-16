@@ -3,8 +3,9 @@ TODO:
 - [x] optimize uint32
 - [x] test whether the optimizations work for uint32 and uint16
 - [x] optimize uint16
-- [ ] and integer (int8-16-32-64) version
+- [x] and integer (int8-16-32-64) version
 - [ ] add interface version
+- [ ] add generic version
 - [ ] add string version
 - [ ] add examples for godoc
 - [ ] add comments for godoc

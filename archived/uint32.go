@@ -38,11 +38,12 @@ func Radix32b8Opt(data, buf []uint32) {
 	src, dst := data, buf[:len(data)]
 	for i := range 4 {
 		for _, v := range src {
-			// Я нахожу очень интересным тот факт что просто меняя эти три строчки местами
-			// вы можете неявно повлиять на производительность этого кода
-			// (на больших массивах это становится вполне заметно)
-			// Конечно это не та проблема которая должна волновать в столь высокоуровневых языках как go
-			// NOTE: добавь объяснение, добавь код из Compiler-Explorer
+			// I find it very interesting that simply reordering these three lines
+			// can implicitly affect the performance of this code
+			// (on large arrays the difference becomes quite noticeable).
+			// Of course, this is not really the kind of issue one is expected to worry about
+			// in high-level languages like Go.
+			// NOTE: add an explanation, include code from Compiler Explorer.
 			index := bucket[i][uint8(v>>(i*8))]
 			bucket[i][uint8(v>>(i*8))]++
 			dst[index] = v
