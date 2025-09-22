@@ -71,7 +71,7 @@ func radix64b8(data, buf []uint64) error {
 	// and sorting by this byte can be skipped.
 	//
 	// Here we use offsets instead of counters. For example:
-	// If offsets[i][1] == offsets[i][255], it means all elements for digit i are 0,
+	// If offsets[i][1] == acc[i], it means all elements for digit i are 0,
 	// and this sorting pass can be skipped entirely.
 	//
 	// Additionally, we count how many times the offset changes (uniqueOffsets).
