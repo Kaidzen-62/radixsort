@@ -9,5 +9,5 @@ TODO:
 - [ ] add string version
 - [ ] add examples for godoc
 - [ ] add comments for godoc
-- [ ] refactor unit tests (add test case names into error messages (even if we using t.Run); use `cmp` instead of `reflect`; rename `data` into `got`)
+- [x] refactor unit tests (add test case names into error messages (even if we using t.Run); use `cmp` instead of `reflect`; rename `data` into `got`)
 

@@ -9,15 +9,16 @@ import (
 	"golang.org/x/exp/constraints"
 )
 
-var sizes = []int{100, 1000, 10_000, 100_000, 1_000_000}
-var modes = []string{"random", "sorted", "reverse", "duplicates"}
-
 // Key for cache map
 type dataKey struct {
 	n    int
 	mode string
 	typ  string // for distinguishing types, e.g. "int", "int64", etc.
 }
+
+// Benhmark cases
+var sizes = []int{100, 1000, 10_000, 100_000, 1_000_000}
+var modes = []string{"random", "sorted", "reverse", "duplicates"}
 
 // Global cache and mutex
 var (
@@ -75,7 +76,7 @@ func generateData[T constraints.Integer](n int, mode string) []T {
 	return data
 }
 
-// typeof - helper function to get type name
+// typeof - helper function to get type name of generic
 func typeof[T any]() string {
 	var zero T
 	return reflect.TypeOf(zero).String()

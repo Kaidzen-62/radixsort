@@ -1,3 +1,5 @@
+github.com/google/go-cmp v0.7.0 h1:wk8382ETsv4JYUZwIsn6YpYiWiBsYLSJiTsyBybVuN8=
+github.com/google/go-cmp v0.7.0/go.mod h1:pXiqmnSA92OHEEa9HXL2W4E7lf9JzCmGVUdgjX3N/iU=
 github.com/loov/radixsort v0.0.0-20210317212949-54715f0cbf6e h1:EPra4wrwrVCmhlXwow8fifuXjEHdQwUwBWY7ahRYkG0=
 github.com/loov/radixsort v0.0.0-20210317212949-54715f0cbf6e/go.mod h1:a6ffPZJqJhneHYU/286fhGUbfyEnBXRTAjFn1hCaqPY=
 github.com/twotwotwo/sorts v0.0.0-20160814051341-bf5c1f2b8553 h1:DRC1ubdb3ZmyyIeCSTxjZIQAnpLPfKVgYrLETQuOPjo=
