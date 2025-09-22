@@ -14,35 +14,51 @@ func TestInt8(t *testing.T) {
 	testSignedSort(t, radixsort.Int8, "Int8")
 }
 
-func TestInt8LargeRandom(t *testing.T) {
-	testSignedSortLargeRandom(t, radixsort.Int8, "Int8")
-}
-
 func TestInt16(t *testing.T) {
 	testSignedSort(t, radixsort.Int16, "Int16")
-}
-
-func TestInt16LargeRandom(t *testing.T) {
-	testSignedSortLargeRandom(t, radixsort.Int16, "Int16")
 }
 
 func TestInt32(t *testing.T) {
 	testSignedSort(t, radixsort.Int32, "Int32")
 }
 
-func TestInt32LargeRandom(t *testing.T) {
-	testSignedSortLargeRandom(t, radixsort.Int32, "Int32")
-}
-
 func TestInt64(t *testing.T) {
 	testSignedSort(t, radixsort.Int64, "Int64")
+}
+
+func TestInt8LargeRandom(t *testing.T) {
+	testSignedSortLargeRandom(t, radixsort.Int8, "Int8")
+}
+
+func TestInt16LargeRandom(t *testing.T) {
+	testSignedSortLargeRandom(t, radixsort.Int16, "Int16")
+}
+
+func TestInt32LargeRandom(t *testing.T) {
+	testSignedSortLargeRandom(t, radixsort.Int32, "Int32")
 }
 
 func TestInt64LargeRandom(t *testing.T) {
 	testSignedSortLargeRandom(t, radixsort.Int64, "Int64")
 }
 
-func testSignedSort[T constraints.Signed, B constraints.Unsigned](t *testing.T, sortFunc func([]T, []B), sortFuncName string) {
+func TestInt8BufferSize(t *testing.T) {
+	testSortBufferSize(t, radixsort.Int8, "Int8")
+}
+
+func TestInt16BufferSize(t *testing.T) {
+	testSortBufferSize(t, radixsort.Int16, "Int16")
+}
+
+func TestInt32BufferSize(t *testing.T) {
+	testSortBufferSize(t, radixsort.Int32, "Int32")
+}
+
+func TestInt64BufferSize(t *testing.T) {
+	testSortBufferSize(t, radixsort.Int64, "Int64")
+}
+
+func testSignedSort[T constraints.Signed, B constraints.Unsigned](t *testing.T, sortFunc func([]T, []B) error, sortFuncName string) {
 	tests := []struct {
 		name string
 		in   []T
@@ -115,7 +131,10 @@ func testSignedSort[T constraints.Signed, B constraints.Unsigned](t *testing.T, 
 			buf := make([]B, len(tt.in))
 			data := append([]T{}, tt.in...)
 
-			sortFunc(data, buf)
+			err := sortFunc(data, buf)
+			if err != nil {
+				t.Fatalf("%s failed: %v", sortFuncName, err)
+			}
 
 			got := data
 
@@ -126,7 +145,7 @@ func testSignedSort[T constraints.Signed, B constraints.Unsigned](t *testing.T, 
 	}
 }
 
-func testSignedSortLargeRandom[T constraints.Signed, B constraints.Unsigned](t *testing.T, sortFunc func([]T, []B), sortFuncName string) {
+func testSignedSortLargeRandom[T constraints.Signed, B constraints.Unsigned](t *testing.T, sortFunc func([]T, []B) error, sortFuncName string) {
 	size := 1_000_000
 	input := make([]T, size)
 	for i := range input {
@@ -134,12 +153,16 @@ func testSignedSortLargeRandom[T constraints.Signed, B constraints.Unsigned](t *
 	}
 
 	if slices.IsSorted(input) {
-		t.Fatalf("tettible rand.rand")
+		t.Fatalf("terrible rand.rand")
 	}
 
 	data := append([]T(nil), input...)
 	buf := make([]B, len(data))
-	sortFunc(data, buf)
+
+	err := sortFunc(data, buf)
+	if err != nil {
+		t.Fatalf("%s failed: %v", sortFuncName, err)
+	}
 
 	if !slices.IsSorted(data) {
 		t.Errorf("%s failed to sort data correctly", sortFuncName)
