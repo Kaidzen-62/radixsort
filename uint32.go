@@ -2,19 +2,19 @@ package radixsort
 
 // Uint32 sorts the given slice of uint32 values in ascending order using the radix sort algorithm.
 // A temporary buffer (buf) is required, and its length must be at least as large as data.
-// It panics if buf is shorter than data slice.
+// If the buffer length is invalid, it returns ErrInvalidBufferSize.
 //
 // Both data and buf will be modified during sorting.
 // The algorithm is stable and runs in O(n) time complexity.
-func Uint32(data, buf []uint32) {
-	radix32b8(data, buf)
+func Uint32(data, buf []uint32) error {
+	return radix32b8(data, buf)
 }
 
 // radix32b8 performs the internal radix sort implementation using 8-bit buckets.
 // The buffer length must be at least as large as data.
-func radix32b8(data, buf []uint32) {
+func radix32b8(data, buf []uint32) error {
 	if len(buf) < len(data) {
-		panic("Radixsort: buffer length is less than data length")
+		return ErrInvalidBufferSize
 	}
 
 	// offsets[d][b] stores prefix sums (insertion offsets) for digit d and offset b.
@@ -87,4 +87,6 @@ func radix32b8(data, buf []uint32) {
 	if swaps&1 == 1 {
 		copy(data, src)
 	}
+
+	return nil
 }

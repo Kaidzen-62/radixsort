@@ -25,7 +25,7 @@ func BenchmarkUint64(b *testing.B) {
 	benchmarkUnsigned(b, radixsort.Uint64, "Uint64")
 }
 
-func benchmarkUnsigned[T constraints.Unsigned](b *testing.B, sortFunc func([]T, []T), sortFuncName string) {
+func benchmarkUnsigned[T constraints.Unsigned](b *testing.B, sortFunc func([]T, []T) error, sortFuncName string) {
 	for _, size := range sizes {
 		for _, mode := range modes {
 			b.Run(func() string {
@@ -38,7 +38,10 @@ func benchmarkUnsigned[T constraints.Unsigned](b *testing.B, sortFunc func([]T, 
 				b.ResetTimer()
 				for b.Loop() {
 					tmp := append([]T{}, data...)
-					sortFunc(tmp, buf)
+					err := sortFunc(tmp, buf)
+					if err != nil {
+						b.Fatalf("%s failed: %v", sortFuncName, err)
+					}
 				}
 			})
 		}
