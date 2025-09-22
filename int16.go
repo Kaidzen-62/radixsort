@@ -12,6 +12,8 @@ import (
 //
 // Both data and buf will be modified during sorting.
 // The algorithm is stable and runs in O(n) time complexity.
+//
+// Usage is identical to Int64; see ExampleInt64 for a working example.
 func Int16(data []int16, buf []uint16) error {
 	return int16ver1call(data, buf)
 }

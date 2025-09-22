@@ -12,6 +12,8 @@ import (
 //
 // Both data and buf will be modified during sorting.
 // The algorithm is stable and runs in O(n) time complexity.
+//
+// Usage is identical to Int64; see ExampleInt64 for a working example.
 func Int8(data []int8, buf []uint8) error {
 	return int8ver1call(data, buf)
 }

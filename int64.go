@@ -12,6 +12,8 @@ import (
 //
 // Both data and buf will be modified during sorting.
 // The algorithm is stable and runs in O(n) time complexity.
+//
+// See ExampleInt64 for a working example.
 func Int64(data []int64, buf []uint64) error {
 	return int64ver1call(data, buf)
 }

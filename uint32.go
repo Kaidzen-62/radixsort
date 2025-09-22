@@ -6,6 +6,8 @@ package radixsort
 //
 // Both data and buf will be modified during sorting.
 // The algorithm is stable and runs in O(n) time complexity.
+//
+// Usage is identical to Uint64; see ExampleUint64 for a working example.
 func Uint32(data, buf []uint32) error {
 	return radix32b8(data, buf)
 }
