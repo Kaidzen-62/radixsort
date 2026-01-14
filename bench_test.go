@@ -27,7 +27,7 @@ var (
 	r     = rand.New(rand.NewSource(time.Now().UnixNano())) // local random generator
 )
 
-func generateData[T constraints.Integer](n int, mode string) []T {
+func generateData[T constraints.Integer | constraints.Float](n int, mode string) []T {
 	key := dataKey{n: n, mode: mode, typ: typeof[T]()}
 
 	mu.RLock()
@@ -59,8 +59,12 @@ func generateData[T constraints.Integer](n int, mode string) []T {
 		}
 	default: // "random"
 		mu.Lock()
-		for i := range data {
-			data[i] = T(r.Intn(n * 10))
+		for i := range n {
+			rf := r.Float64()
+			p := r.Intn(20) // 20 is a maximum amount of digits in uint64
+			// generates number between 0 and 1, then multiplys by random 10^n, then converts to specific type
+			// where n is random number of digits
+			data[i] = T(rf * float64(p))
 		}
 		mu.Unlock()
 	}

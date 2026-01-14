@@ -93,15 +93,11 @@ This project is licensed under the BSD 3-Clause License.
 See the LICENSE file for details.
 
 ## TODO
-- [x] optimize uint64
-- [x] optimize uint32
-- [x] test whether the optimizations work for uint32 and uint16
-- [x] optimize uint16
-- [x] and integer (int8-16-32-64) version
 - [ ] add interface version
-- [ ] add generic version
+- [x] add generic version
+- [ ] add generic benchmarks
+- [ ] benchmart 'generic' version and optimize it
 - [ ] add string version
-- [x] add examples for godoc
-- [x] add comments for godoc
-- [x] refactor unit tests (add test case names into error messages (even if we using t.Run); use `cmp` instead of `reflect`; rename `data` into `got`)
+- [ ] add examples and update TODO (generics) for godoc
+- [ ] add comments (generics) for godoc
 
