@@ -11,20 +11,36 @@ type ConstraintNumbers interface {
 	constraints.Integer | constraints.Float
 }
 
-// Generic sorts a slice of elements in place using the radix sort algorithm.
+// Generic sorts a slice of elements using radix sort with a custom key extractor.
 //
-// E is the element type, which can be any type.
-// N is the numeric key type, which must be an integer or float type.
-// data is the slice to be sorted (sorted in place).
-// buf is a buffer slice of the same length as data, used for temporary storage during sorting.
-// key is a function that extracts a numeric sort key from each element.
+// Generic allows sorting any slice type E by extracting a numeric key N
+// (integer or float type) from each element.
 //
-// The function supports sorting by unsigned integers, signed integers, and floating point numbers.
-// For signed types, the function automatically handles the sign bit to ensure correct ordering.
+// Parameters:
+//   - data: the slice to sort (modified in place)
+//   - buf: temporary buffer, must have len(buf) >= len(data)
+//   - key: function that extracts a numeric sort key from each element
 //
-// Returns an error if buf is smaller than data.
+// The key function is called once per element per sorting pass. For best
+// performance, keep the key extraction simple and fast.
 //
-// See ExampleGeneric_float64 and ExampleGeneric_struct for working examples.
+// The buffer can be reused across multiple sort operations without clearing.
+//
+// Returns ErrInvalidBufferSize if len(buf) < len(data).
+//
+// Example with float64 keys:
+//
+//	type Item struct{ Score float64 }
+//	items := []Item{{95.5}, {87.3}, {92.1}}
+//	buf := make([]Item, len(items))
+//	err := Generic(items, buf, func(i Item) float64 { return i.Score })
+//
+// Example with int keys:
+//
+//	type User struct{ ID int }
+//	users := []User{{3}, {1}, {2}}
+//	buf := make([]User, len(users))
+//	err := Generic(users, buf, func(u User) int { return u.ID })
 func Generic[E any, N ConstraintNumbers](data, buf []E, key func(a E) N) error {
 	if len(data) < 2 {
 		return nil

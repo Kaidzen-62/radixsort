@@ -1,14 +1,20 @@
 package radixsort
 
-// Uint64 sorts the given slice of uint64 values in ascending order using the radix sort algorithm.
+// Uint64 sorts a slice of uint64 values in ascending order.
 //
-// A temporary buffer (buf) is required, and its length must be at least as large as data.
-// If the buffer length is invalid, it returns ErrInvalidBufferSize.
+// The data slice is sorted in place. The buf slice is used for temporary
+// storage during sorting and must have len(buf) >= len(data).
 //
-// Both data and buf will be modified during sorting.
-// The algorithm is stable and runs in O(n) time complexity.
+// The buffer can be reused across multiple sort operations without clearing.
 //
-// See ExampleUint64 for a working example.
+// Returns ErrInvalidBufferSize if len(buf) < len(data).
+//
+// Example:
+//
+//	data := []uint64{5, 2, 9, 1, 5, 6}
+//	buf := make([]uint64, len(data))
+//	err := Uint64(data, buf)
+//	// data is now sorted: [1, 2, 5, 5, 6, 9]
 func Uint64(data, buf []uint64) error {
 	return radix64b8(data, buf)
 }

@@ -55,11 +55,10 @@
 // # Performance Considerations
 //
 // Radix sort excels when:
-//   - Sorting large collections of fixed-width integers
+//   - Sorting large collections of fixed-width numbers
 //   - Stable ordering is required
-//   - Data has many duplicate values (optimization skips redundant passes)
 //
-// For small slices (< 100 elements), standard library sort may be faster
+// For small slices (< 1000 elements), standard library sort may be faster
 // due to lower constant factors.
 //
 // # Error Handling

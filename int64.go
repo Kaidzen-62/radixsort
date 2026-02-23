@@ -5,15 +5,21 @@ import (
 	"unsafe"
 )
 
-// Int64 sorts the given slice of int64 values in ascending order using the radix sort algorithm.
+// Int64 sorts a slice of int64 values in ascending order.
 //
-// A temporary buffer (buf) is required, and its length must be at least as large as data.
-// If the buffer length is invalid, it returns ErrInvalidBufferSize.
+// The data slice is sorted in place. The buf slice is used for temporary
+// storage during sorting and must have len(buf) >= len(data).
 //
-// Both data and buf will be modified during sorting.
-// The algorithm is stable and runs in O(n) time complexity.
+// The buffer can be reused across multiple sort operations without clearing.
 //
-// See ExampleInt64 for a working example.
+// Returns ErrInvalidBufferSize if len(buf) < len(data).
+//
+// Example:
+//
+//	data := []int64{-5, 2, -9, 1, 0}
+//	buf := make([]uint64, len(data))
+//	err := Int64(data, buf)
+//	// data is now sorted: [-9, -5, 0, 1, 2]
 func Int64(data []int64, buf []uint64) error {
 	return int64ver1call(data, buf)
 }

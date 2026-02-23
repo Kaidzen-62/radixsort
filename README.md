@@ -98,6 +98,6 @@ See the LICENSE file for details.
 - [x] add generic benchmarks
 - [ ] benchmart 'generic' version and optimize it
 - [ ] add string version
-- [ ] add examples and update TODO (generics) for godoc
-- [ ] add comments (generics) for godoc
+- [x] add examples and update TODO (generics) for godoc
+- [x] add comments (generics) for godoc
 
