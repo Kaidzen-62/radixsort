@@ -93,11 +93,7 @@ This project is licensed under the BSD 3-Clause License.
 See the LICENSE file for details.
 
 ## TODO
-- [ ] add interface version
-- [x] add generic version
-- [x] add generic benchmarks
 - [ ] benchmart 'generic' version and optimize it
 - [ ] add string version
-- [x] add examples and update TODO (generics) for godoc
-- [x] add comments (generics) for godoc
+- [ ] add interface version
 
