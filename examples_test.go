@@ -6,6 +6,53 @@ import (
 	"github.com/Kaidzen-62/radixsort"
 )
 
+func ExampleGeneric_float64() {
+	data := []float64{3.14, -2.5, 0.0, 1.5, -1.0}
+	buf := make([]float64, len(data))
+
+	key := func(a float64) float64 {
+		return a
+	}
+
+	if err := radixsort.Generic(data, buf, key); err != nil {
+		panic(err)
+	}
+	fmt.Println(data)
+	// Output:
+	// [-2.5 -1 0 1.5 3.14]
+}
+
+func ExampleGeneric_struct() {
+	type Person struct {
+		Name string
+		Age  uint64
+	}
+
+	data := []Person{
+		{"Alice", 30},
+		{"Bob", 25},
+		{"Charlie", 35},
+		{"Diana", 25},
+	}
+	buf := make([]Person, len(data))
+
+	key := func(p Person) uint64 {
+		return p.Age
+	}
+
+	if err := radixsort.Generic(data, buf, key); err != nil {
+		panic(err)
+	}
+	for _, p := range data {
+		fmt.Printf("%s: %d\n", p.Name, p.Age)
+	}
+	// Output:
+	// Bob: 25
+	// Diana: 25
+	// Alice: 30
+	// Charlie: 35
+}
+
 func ExampleUint64() {
 	data := []uint64{170, 45, 75, 90, 802, 24, 2, 66}
 	buf := make([]uint64, len(data))

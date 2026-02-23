@@ -11,6 +11,20 @@ type ConstraintNumbers interface {
 	constraints.Integer | constraints.Float
 }
 
+// Generic sorts a slice of elements in place using the radix sort algorithm.
+//
+// E is the element type, which can be any type.
+// N is the numeric key type, which must be an integer or float type.
+// data is the slice to be sorted (sorted in place).
+// buf is a buffer slice of the same length as data, used for temporary storage during sorting.
+// key is a function that extracts a numeric sort key from each element.
+//
+// The function supports sorting by unsigned integers, signed integers, and floating point numbers.
+// For signed types, the function automatically handles the sign bit to ensure correct ordering.
+//
+// Returns an error if buf is smaller than data.
+//
+// See ExampleGeneric_float64 and ExampleGeneric_struct for working examples.
 func Generic[E any, N ConstraintNumbers](data, buf []E, key func(a E) N) error {
 	if len(data) < 2 {
 		return nil
@@ -63,6 +77,7 @@ func Generic[E any, N ConstraintNumbers](data, buf []E, key func(a E) N) error {
 	// First they are used as frequency counters, then converted into offsets.
 	offsets := [8][256]uint{}
 	for _, e := range data {
+		// NOTE: тут следует забэнчить что лучше: циклы или развернутый вариант
 		for d := range sizeofKey {
 			b := byte(unsignedKey(e) >> (d * 8))
 			offsets[d][b]++
@@ -70,6 +85,7 @@ func Generic[E any, N ConstraintNumbers](data, buf []E, key func(a E) N) error {
 	}
 
 	// Convert counts into prefix sums (offsets).
+	// NOTE: стоит забенчить что лучше: развернутный или свернутый цикл
 	acc := [8]uint{
 		offsets[0][0],
 		offsets[1][0],
@@ -98,6 +114,14 @@ func Generic[E any, N ConstraintNumbers](data, buf []E, key func(a E) N) error {
 		offsets[6][i], acc[6] = acc[6], acc[6]+offsets[6][i]
 		offsets[7][i], acc[7] = acc[7], acc[7]+offsets[7][i]
 	}
+
+	// for b := 1; b < 256; b++ {
+	//   for d := range sizeofKey {
+	//     NOTE: А вот тут появляется пространство для маневра и действительно можно пропустить лишние циклы для лишних рязрядов
+	//     ХОТЯ: лучше этот момент забэнчить (цикл vs развернутый вариант)
+	//     offsets[d][b], acc[d] = acc[d], acc[d]+offsets[d][b]
+	//   }
+	// }
 
 	// Optimization: skip sorting passes where all elements in the digit are identical.
 	uniqueOffsets := [8]uint{}

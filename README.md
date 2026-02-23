@@ -95,7 +95,7 @@ See the LICENSE file for details.
 ## TODO
 - [ ] add interface version
 - [x] add generic version
-- [ ] add generic benchmarks
+- [x] add generic benchmarks
 - [ ] benchmart 'generic' version and optimize it
 - [ ] add string version
 - [ ] add examples and update TODO (generics) for godoc
