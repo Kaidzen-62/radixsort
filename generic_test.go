@@ -313,7 +313,7 @@ func TestGenericIntRandom(t *testing.T) {
 	}
 }
 
-func TestGenreicFloat32(t *testing.T) {
+func TestGenericFloat32(t *testing.T) {
 	tests := []struct {
 		name string
 		in   []float32
@@ -406,7 +406,7 @@ func TestGenreicFloat32(t *testing.T) {
 	}
 }
 
-func TestGenreicFloat64(t *testing.T) {
+func TestGenericFloat64(t *testing.T) {
 	tests := []struct {
 		name string
 		in   []float64

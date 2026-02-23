@@ -1,13 +1,15 @@
 package radixsort
 
-// Uint16 sorts the given slice of uint16 values in ascending order using the radix sort algorithm.
-// A temporary buffer (buf) is required, and its length must be at least as large as data.
-// If the buffer length is invalid, it returns ErrInvalidBufferSize.
+// Uint16 sorts a slice of uint16 values in ascending order.
 //
-// Both data and buf will be modified during sorting.
-// The algorithm is stable and runs in O(n) time complexity.
+// The data slice is sorted in place. The buf slice is used for temporary
+// storage during sorting and must have len(buf) >= len(data).
 //
-// Usage is identical to Uint64; see ExampleUint64 for a working example.
+// The buffer can be reused across multiple sort operations without clearing.
+//
+// Returns ErrInvalidBufferSize if len(buf) < len(data).
+//
+// See [Uint64] for the 64-bit version and for usage example.
 func Uint16(data, buf []uint16) error {
 	return radix16b8(data, buf)
 }

@@ -5,15 +5,16 @@ import (
 	"unsafe"
 )
 
-// Int16 sorts the given slice of int16 values in ascending order using the radix sort algorithm.
+// Int16 sorts a slice of int16 values in ascending order.
 //
-// A temporary buffer (buf) is required, and its length must be at least as large as data.
-// If the buffer length is invalid, it returns ErrInvalidBufferSize.
+// The data slice is sorted in place. The buf slice is used for temporary
+// storage during sorting and must have len(buf) >= len(data).
 //
-// Both data and buf will be modified during sorting.
-// The algorithm is stable and runs in O(n) time complexity.
+// The buffer can be reused across multiple sort operations without clearing.
 //
-// Usage is identical to Int64; see ExampleInt64 for a working example.
+// Returns ErrInvalidBufferSize if len(buf) < len(data).
+//
+// See [Int64] for the 64-bit version and for usage example.
 func Int16(data []int16, buf []uint16) error {
 	return int16ver1call(data, buf)
 }
